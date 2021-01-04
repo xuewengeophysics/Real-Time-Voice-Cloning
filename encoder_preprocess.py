@@ -36,6 +36,7 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--skip_existing", action="store_true", help=\
         "Whether to skip existing output files with the same name. Useful if this script was "
         "interrupted.")
+    #沉默声音的处理
     parser.add_argument("--no_trim", action="store_true", help=\
         "Preprocess audio without trimming silences (not recommended).")
     args = parser.parse_args()
@@ -59,6 +60,7 @@ if __name__ == "__main__":
 
     # Preprocess the datasets
     print_args(args, parser)
+    #3块语料集
     preprocess_func = {
         "librispeech_other": preprocess_librispeech,
         "voxceleb1": preprocess_voxceleb1,

@@ -94,16 +94,19 @@ def _preprocess_speaker_dirs(speaker_dirs, dataset_name, datasets_root, out_dir,
                 continue
                 
             # Load and preprocess the waveform
+            #1.加载、预处理
             wav = audio.preprocess_wav(in_fpath)
             if len(wav) == 0:
                 continue
             
             # Create the mel spectrogram, discard those that are too short
+            #2.waveform转Mel谱
             frames = audio.wav_to_mel_spectrogram(wav)
             if len(frames) < partials_n_frames:
                 continue
             
             out_fpath = speaker_out_dir.joinpath(out_fname)
+            #3.保存
             np.save(out_fpath, frames)
             logger.add_sample(duration=len(wav) / sampling_rate)
             sources_file.write("%s,%s\n" % (out_fname, in_fpath))
@@ -111,6 +114,7 @@ def _preprocess_speaker_dirs(speaker_dirs, dataset_name, datasets_root, out_dir,
         sources_file.close()
     
     # Process the utterances for each speaker
+    #采用线程池，并行处理
     with ThreadPool(8) as pool:
         list(tqdm(pool.imap(preprocess_speaker, speaker_dirs), dataset_name, len(speaker_dirs),
                   unit="speakers"))
